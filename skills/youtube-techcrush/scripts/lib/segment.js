@@ -26,21 +26,21 @@ export function windows(words, { lenMs = 42_000, stepMs = 12_000, minWords = 25 
  * abstract commentary carries a penalty rather than merely a low weight.
  */
 export const DEFAULT_SIGNALS = [
-  { k: 'space/NASA',     w: 5.0, re: /\b(ნასა|nasa|კოსმოს|რაკეტ|ვოიაჯერ|მარს|პლანეტ|სკაფანდრ|ორბიტ|ასტრონავტ|სატელიტ|ტელესკოპ|გალაქტიკ|ვარსკვლავ|jpl|voyager|rocket|orbit|astronaut)/i },
-  { k: 'local identity', w: 3.0, re: /\b(ქართველ|ქართულ|საქართველო|თბილის|ჩაკრულო|ერისიონ|სამშობლო|ჩვენი ქვეყ)/i },
-  { k: 'concrete story', w: 2.5, re: /\b(მახსოვს|პირველად|იმ დღეს|ბავშვობა|მაშინ როცა|არასდროს დამავიწყდ|შემეშინდა|ვიტირე|გამიკვირდა|i remember|the first time|that day)/i },
-  { k: 'conflict/drama', w: 2.5, re: /\b(პანიკა|შეცდომ|ჩავარდ|დამარცხ|უარი|აკრძალ|ომ[იმს]|დაანგრი|დაწვ|საშიშ|რისკ|კრიზის|წააგ|panic|refused|banned|failed|crisis)/i },
-  { k: 'number/scale',   w: 1.5, re: /\b\d{2,}\s?(მილიონ|მილიარდ|ათას|წლ|კილომეტრ|პროცენტ|ჯერ|million|billion|thousand|percent|years)/i },
-  { k: 'direct address', w: 1.2, re: /\?|წარმოიდგინე|იცოდ[ით]|გინდა|imagine|did you know/i },
-  { k: 'named authority', w: 1.2, re: /\b(სეიგან|მასკ|ალტმან|sagan|musk|altman|google|nvidia|openai|princeton|harvard|mit)/i },
-  { k: 'abstract (penalty)', w: -2.0, re: /\b(ხელოვნური ინტელექტი (განვითარდ|ვითარდ)|ტექნოლოგიები ვითარდება|მომავალი იქნება|უნდა ვისწავლოთ|ai is developing|the future will be|we need to learn)/i },
+  { k: 'space/NASA',     w: 5.0, re: /(?<![\p{L}\p{N}_])(ნასა|nasa|კოსმოს|რაკეტ|ვოიაჯერ|მარს|პლანეტ|სკაფანდრ|ორბიტ|ასტრონავტ|სატელიტ|ტელესკოპ|გალაქტიკ|ვარსკვლავ|jpl|voyager|rocket|orbit|astronaut)/iu },
+  { k: 'local identity', w: 3.0, re: /(?<![\p{L}\p{N}_])(ქართველ|ქართულ|საქართველო|თბილის|ჩაკრულო|ერისიონ|სამშობლო|ჩვენი ქვეყ)/iu },
+  { k: 'concrete story', w: 2.5, re: /(?<![\p{L}\p{N}_])(მახსოვს|პირველად|იმ დღეს|ბავშვობა|მაშინ როცა|არასდროს დამავიწყდ|შემეშინდა|ვიტირე|გამიკვირდა|i remember|the first time|that day)/iu },
+  { k: 'conflict/drama', w: 2.5, re: /(?<![\p{L}\p{N}_])(პანიკა|შეცდომ|ჩავარდ|დამარცხ|უარი|აკრძალ|ომ[იმს]|დაანგრი|დაწვ|საშიშ|რისკ|კრიზის|წააგ|panic|refused|banned|failed|crisis)/iu },
+  { k: 'number/scale',   w: 1.5, re: /(?<![\p{L}\p{N}_])\d{2,}\s?(მილიონ|მილიარდ|ათას|წლ|კილომეტრ|პროცენტ|ჯერ|million|billion|thousand|percent|years)/iu },
+  { k: 'direct address', w: 1.2, re: /\?|წარმოიდგინე|იცოდ[ით]|გინდა|imagine|did you know/iu },
+  { k: 'named authority', w: 1.2, re: /(?<![\p{L}\p{N}_])(სეიგან|მასკ|ალტმან|sagan|musk|altman|google|nvidia|openai|princeton|harvard|mit)/iu },
+  { k: 'abstract (penalty)', w: -2.0, re: /(?<![\p{L}\p{N}_])(ხელოვნური ინტელექტი (განვითარდ|ვითარდ)|ტექნოლოგიები ვითარდება|მომავალი იქნება|უნდა ვისწავლოთ|ai is developing|the future will be|we need to learn)/iu },
 ];
 
 export function score(text, signals = DEFAULT_SIGNALS) {
   const hits = [];
   let s = 0;
   for (const sig of signals) {
-    const m = text.match(new RegExp(sig.re.source, 'gi'));
+    const m = text.match(new RegExp(sig.re.source, 'giu'));
     if (!m) continue;
     // Saturate: three mentions of "NASA" is not three times as good as one.
     const n = Math.min(m.length, 3);

@@ -5,9 +5,11 @@ places it breaks for Georgian, and the workarounds.
 
 ## Speech-to-text
 
+**Current shared workflow:** new local transcription defaults to Meta Omnilingual ASR through [Podcut Flow](podcut-flow.md). Review the full timed transcript before assembly. The table/comparison below records an earlier sample, not a general model ranking; Whisper is now opt-in.
+
 | Source | Georgian | Quality | Cost |
 |---|---|---|---|
-| **YouTube auto-captions (`ka-orig`)** | yes | **best available** | free |
+| **YouTube auto-captions (`ka-orig`)** | yes | good on the historical sample below | free |
 | whisper.cpp / OpenAI `large-v3` | yes, nominally | poor — frequently unusable | free (local) |
 | whisper `large-v3-turbo` | yes, nominally | worse than large-v3 | free (local) |
 | ElevenLabs Scribe | yes | strong | paid |
@@ -17,12 +19,11 @@ Direct comparison on the same two minutes of Georgian podcast audio:
 - whisper large-v3: *"და უსახვედურეს რატოც ესო ნასას. ესე იგი ველაბარაგებით."*
 - YouTube `ka-orig`: *"და უსაყვედურეს რატო წერსო ნასასო, ესე იგი ველაპარაკები"*
 
-The YouTube version is close to correct; the Whisper version is close to noise. Whisper
-is distilled and benchmarked on high-resource languages, and Georgian is where that
-shows. Beam-search parameters did not help.
+The YouTube version was closer to the recording in this historical sample. This is a
+sample observation, not a general accuracy claim or an explanation of model training.
 
-**Use YouTube captions for anything already uploaded.** Reach for Whisper only on raw,
-unpublished footage — and set expectations before spending time on it.
+Use reviewed existing captions for archive work when appropriate. For raw/unpublished
+footage, use **Meta by default**, test a representative sample and review names/timing.
 
 ## Text-to-speech
 
@@ -53,8 +54,9 @@ Get static Noto Sans Georgian from the
 [notofonts/georgian releases](https://github.com/notofonts/georgian/releases)
 (`NotoSansGeorgian-ExtraBold.ttf`, `-Black.ttf`). The google/fonts copy is variable-only.
 
-Mkhedruli has no uppercase, so ALL-CAPS caption styling — a common Shorts convention in
-Latin-script languages — does nothing. Get emphasis from weight, size, and colour instead.
+Do not silently force Georgian casing changes. If Mtavruli uppercase is requested,
+verify that the chosen original font contains the actual characters. Offer weight,
+size and color choices using real font files and show the result for approval.
 
 Georgian words run long. Keep captions to 3–4 words per line and expect to reduce the
 count relative to an English equivalent.

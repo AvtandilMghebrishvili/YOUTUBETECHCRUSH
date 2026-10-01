@@ -17,11 +17,11 @@ import { listChannel } from './fetch-transcripts.js';
 import { parseArgs, requireArg, isMain } from './lib/args.js';
 
 export const TOPICS = [
-  ['space / NASA',        /\b(ნასა|nasa|კოსმოს|რაკეტ|სკაფანდრ|სეიგან|ჩაკრულო|მარს|voyager|space|rocket|orbit)/i],
-  ['local identity',      /\b(ქართ|საქართველო|🇬🇪|ქვეყან|თბილის|georgian|georgia)/i],
-  ['robots / hardware',   /\b(რობოტ|დრონ|humanoid|robot|drone|unitree|hardware)/i],
-  ['abstract AI talk',    /\b(ai|ხელოვნურ|chatgpt|gemini|claude)/i],
-  ['career / education',  /\b(კარიერ|სკოლ|უნივერსიტეტ|სწავლ|career|school|university|student)/i],
+  ['space / NASA',        /(?<![\p{L}\p{N}_])(ნასა|nasa|კოსმოს|რაკეტ|სკაფანდრ|სეიგან|ჩაკრულო|მარს|voyager|space|rocket|orbit)/iu],
+  ['local identity',      /(?<![\p{L}\p{N}_])(ქართ|საქართველო|🇬🇪|ქვეყან|თბილის|georgian|georgia)/iu],
+  ['robots / hardware',   /(?<![\p{L}\p{N}_])(რობოტ|დრონ|humanoid|robot|drone|unitree|hardware)/iu],
+  ['abstract AI talk',    /(?<![\p{L}\p{N}_])(ai|ხელოვნურ|chatgpt|gemini|claude)/iu],
+  ['career / education',  /(?<![\p{L}\p{N}_])(კარიერ|სკოლ|უნივერსიტეტ|სწავლ|career|school|university|student)/iu],
 ];
 
 const median = (xs) => {

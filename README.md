@@ -1,5 +1,13 @@
 # YOUTUBETECHCRUSH
 
+## Shared workflow with Podcut Flow
+
+For new episodes and local Shorts, start with **[Podcut Flow](https://github.com/AvtandilMghebrishvili/podcut-flow)**. It uses **Meta Omnilingual ASR by default**, asks for clip count/durations, shows the complete timed transcript for correction and approval, offers captions on/off with original-font/color choices, and prepends a real spoken teaser while retaining it later in the conversation. Clean video and editable subtitles are preserved. [Shared workflow and commands](skills/youtube-techcrush/references/podcut-flow.md).
+
+**ქართული:** ჯერ ვთანხმდებით რაოდენობასა და ხანგრძლივობაზე, შემდეგ სრულ ტექსტს ტაიმკოდებით ამოწმებ/ასწორებ. ირჩევ ნამდვილ ფონტს, ფერს და სუბტიტრებს ჩართულს/გამორთულს. ჰუკი დასაწყისში ტიზერად მეორდება და სრულ საუბარშიც რჩება. აწყობა იწყება მხოლოდ მიმდინარე არჩევანის დასტურის შემდეგ.
+
+The archive tools below remain available. Their original renderer is a legacy YouTube-download/karaoke-overlay route; it does not implement the new review gates or spoken-hook reordering. Podcut's local route uses Python/FFmpeg and static cue captions; the archive tools here use Node/yt-dlp. See the linked guide for the actual boundary between them.
+
 A Claude skill for turning a long-form podcast archive into YouTube Shorts — by mining
 footage that already exists, not by generating AI video from scratch.
 
@@ -101,8 +109,9 @@ Set `YTC_ROOT` to point the scripts at a project directory other than the curren
 
 Measured, not assumed:
 
-- **YouTube's own captions beat local Whisper `large-v3` on Georgian by a wide margin** —
-  and they are free and instant. Whisper is worth it only for unpublished footage.
+- The historical Georgian sample favored YouTube captions over local Whisper `large-v3`.
+  New local transcription now defaults to **Meta Omnilingual ASR** in the shared workflow;
+  review the actual recording rather than treating one sample as a universal ranking.
 - **Google Cloud TTS has no Georgian at all.** Free Georgian TTS is two Edge voices,
   which means every video on a channel sounds identical.
 - **Variable fonts render at the wrong weight in libass.** Use static instances or your

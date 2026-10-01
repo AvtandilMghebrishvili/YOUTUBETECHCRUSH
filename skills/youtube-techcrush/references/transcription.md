@@ -1,76 +1,23 @@
-# Transcription
+# Transcription: Meta default, reviewed archive captions optional
 
-## Decision
+For **new local transcription**, use **Meta Omnilingual ASR** through [Podcut Flow](https://github.com/AvtandilMghebrishvili/podcut-flow/blob/main/docs/TRANSCRIPTION.md). Its default is the local CTC 300M INT8 model. Reuse reviewed existing transcripts; do not re-transcribe solely to change engines. Whisper/comparison is explicitly optional.
 
-**Video already on YouTube → use YouTube's captions.** Free, instant, word-level
-timestamps, speaker markers. `scripts/fetch-transcripts.js` handles it.
+For already published videos, `scripts/fetch-transcripts.js` can retrieve available YouTube captions. Listen and review the actual track. Platform/model quality varies with the recording; historical comparisons on one Georgian sample do not establish a general ranking. Do not upload private footage merely to obtain captions.
 
-**Raw footage not yet uploaded → local Whisper**, accepting that quality drops sharply
-outside high-resource languages.
+Show the **complete transcript with timecodes** before assembling video or burning captions. Let the user correct names, words and timings, then obtain confirmation of the revised text. Keep the original draft separately. Approval is tied to the version being used; later edits need a new confirmation.
 
-There is rarely a reason to run Whisper on an uploaded video. It is slower and, for many
-languages, worse. See `georgian.md` for a side-by-side.
+## Archive input
 
-## What YouTube captions give you
+The archive scripts flatten available `json3` caption events to `{t, ms}` entries, retaining the track label. An event segment can contain multiple words: timestamps must not be presented as guaranteed word alignment. Request the user's actual language, inspect the returned track and avoid silently treating a translated fallback as original speech.
 
-`yt-dlp --write-auto-subs --sub-format json3` returns events with per-word offsets:
-
-```json
-{"tStartMs": 490700, "segs": [{"utf8": "მეილი", "tOffsetMs": 0},
-                              {"utf8": "და",     "tOffsetMs": 340}]}
+```sh
+node scripts/fetch-transcripts.js --video VIDEO_ID --langs "ka-orig,ka"
 ```
 
-Flatten to `{text, ms}` pairs. Word-level timing is what makes karaoke-style captions
-and precise clip boundaries possible — sentence-level SRT is not enough.
+Missing captions are a reason to use the local Meta route with the user's authorized local recording, not to upload automatically or switch to a paid service. Paid/cloud services require the user's choice. No transcription source alone establishes speaker identity; `>>` indicates a possible speaker change, not a name.
 
-Language codes: prefer `ka-orig` (or `<lang>-orig`) over `ka`. The `-orig` track is the
-original-language transcription; the bare code may be a machine translation of it, which
-round-trips through English and loses accuracy.
+## Local clip handoff
 
-Request several and take the first that exists:
-`--sub-langs "ka-orig,ka,en-orig,en"`.
+Follow [the shared workflow](podcut-flow.md). The local reviewed renderer needs a complete transcript matching the **edited video clock**, with `segments` and seconds, not this archive's raw `{t,ms}` format or source-clock ASR times. For a Podcut episode use its final-clock transcript. Verify imported timings against the exact video. Repeating the spoken hook at the start also repeats its text at the corresponding new timecodes.
 
-## When captions are missing
-
-Some videos have none — very short uploads, some music content, or captions disabled.
-Options in order of preference:
-
-1. **Wait.** YouTube generates captions within hours of upload for supported languages.
-2. **Upload the video first** if it is going to be published anyway.
-3. **Local Whisper**, below.
-4. **Paid ASR** (ElevenLabs Scribe) when quality matters more than cost — roughly
-   $0.40/hour, so even a multi-hundred-hour archive is a modest one-off cost.
-
-## Local Whisper
-
-`whisper.cpp` provides prebuilt Windows binaries with no Python. The CUDA build is
-~671 MB and `ggml-large-v3.bin` is ~3.1 GB.
-
-```bash
-# CUDA build (NVIDIA):
-#   https://github.com/ggml-org/whisper.cpp/releases → whisper-cublas-*-bin-x64.zip
-# Model:
-#   https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3.bin
-
-ffmpeg -i input.mp4 -ar 16000 -ac 1 -c:a pcm_s16le audio.wav
-tools/whisper/Release/whisper-cli.exe \
-  -m tools/whisper/models/ggml-large-v3.bin -f audio.wav -l <lang> -oj
-```
-
-Notes:
-
-- 16 kHz mono PCM WAV is required. Other formats are accepted then silently resampled.
-- Use `large-v3`, not `large-v3-turbo`, for non-English. Turbo is distilled and loses
-  the most on exactly the languages that need help.
-- `-oj` writes JSON with segment timings. `-ml 1` approximates word-level splitting.
-- On an RTX 3090, an hour of audio takes a few minutes. Model load dominates short
-  files, so batch them in one invocation where possible.
-- Tell the user the expected quality for their language *before* downloading 4 GB.
-
-## Diarisation
-
-Neither source gives real speaker identification. YouTube's `>>` markers indicate a
-speaker *change*, not who is speaking — enough to detect dialogue versus monologue,
-which is what clip scoring actually needs. A window with one or two speaker changes is
-usually a live exchange; more than four is a fragmented conversation that will not read
-as a coherent clip.
+Meta's word boundaries remain approximate. The new local renderer uses editable static cues; it does not invent exact karaoke alignment after text corrections. Keep separate SRT/VTT/TXT/JSON and a clean video so captions can be omitted or changed later.
