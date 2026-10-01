@@ -1,3 +1,3 @@
-# YOUTUBETECHCRUSH
+# Moved to Creator Flow
 
-Read AGENTS.md. Episode/Shorts work follows `skills/youtube-techcrush/SKILL.md` and the shared Podcut Flow reference. Meta is the default for new recognition; count/duration and the complete transcript, spoken teaser and caption choices require user confirmation before production/assembly at their respective stages.
+Use https://github.com/AvtandilMghebrishvili/creator-flow. Read its START_HERE.md and creator-flow skill. This checkout is a historical archive; do not install a second toolkit. See README.md.
